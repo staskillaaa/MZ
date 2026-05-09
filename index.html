@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Emergency Services CRM</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Segoe UI,Arial,sans-serif}
+    body{background:#eef3f9;color:#152033;min-height:100vh}
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer;border:0;border-radius:12px;padding:11px 16px;font-weight:800;background:#1d67c1;color:#fff;transition:.2s}
+    button:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(29,103,193,.25)}
+    .btn-light{background:#f4f7fb;color:#1a2d47;border:1px solid #d7e2ef}
+    .btn-red{background:#ef3831}.btn-green{background:#25a958}.btn-yellow{background:#f3a900}.btn-dark{background:#1d2d44}
+    .app{padding:18px;width:100%;max-width:100%;margin:0 auto;overflow-x:hidden}
+    .topbar{min-height:78px;background:rgba(255,255,255,.92);border:1px solid #dce5f0;border-radius:14px;display:grid;grid-template-columns:180px minmax(0,1fr);align-items:center;box-shadow:0 10px 30px rgba(39,59,88,.09);overflow:hidden;margin-bottom:22px;width:100%;position:relative;padding-left:250px}
+    .top-item{height:100%;display:flex;align-items:center;gap:8px;padding:0 14px;border-right:1px solid #dbe4f0;min-width:0}
+    .top-ico{font-size:16px;color:#7f90a8;background:linear-gradient(145deg,#ffffff,#dde8f5);width:34px;height:34px;border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 14px rgba(29,103,193,.10)}.top-small{font-size:10px;color:#60708a}.top-bold{font-size:13px;font-weight:900;color:#101c2d}
+    .nav{display:flex;height:100%;align-items:stretch;justify-content:flex-start;gap:0;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;min-width:0;width:100%;scrollbar-width:thin}
+    .nav button{height:100%;border-radius:0;background:transparent;color:#142238;border-right:1px solid #dbe4f0;padding:0 24px;font-size:16px;font-weight:900;position:relative;box-shadow:none;transform:none;white-space:nowrap;flex:0 0 auto;min-width:max-content}
+    .nav button.active{color:#075ec7}.nav button.active:after{content:"";position:absolute;left:25px;right:25px;bottom:0;height:4px;border-radius:8px;background:#1269d3}
+    .profile{position:absolute;left:0;top:0;width:250px;height:100%;display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 14px;min-width:0;overflow:hidden;border-right:1px solid #dbe4f0;background:rgba(255,255,255,.96);z-index:5}.profile-info{display:flex;flex-direction:column;line-height:1.15;min-width:0;max-width:120px}.profile-info span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.profile .btn-light{padding:6px 8px;font-size:12px;flex-shrink:0}.profile-role{font-size:10px;color:#6c7c93;font-weight:700;text-transform:uppercase;letter-spacing:.5px}.profile-name{font-size:15px;font-weight:900;color:#142238;cursor:pointer;text-decoration:none}.profile-name:hover{color:#1269d3;text-decoration:underline}.avatar{width:44px;height:44px;border-radius:18px;background:linear-gradient(145deg,#ffffff,#d9e7f8);border:2px solid #c7d4e4;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 10px 20px rgba(29,103,193,.12)}
+    .login{max-width:520px;margin:55px auto;background:rgba(255,255,255,.94);border:1px solid #dce5f0;border-radius:28px;box-shadow:0 25px 70px rgba(39,59,88,.16);padding:0;overflow:hidden;position:relative}.login:before{content:"";position:absolute;inset:-120px;background:radial-gradient(circle at 20% 10%,rgba(29,103,193,.16),transparent 35%),radial-gradient(circle at 90% 25%,rgba(239,56,49,.12),transparent 32%);pointer-events:none}.login-inner{position:relative;padding:28px}.login-hero{height:145px;background:linear-gradient(135deg,#eaf3ff,#ffffff);border-bottom:1px solid #dce5f0;display:flex;align-items:center;justify-content:space-between;padding:24px 28px;position:relative}.login-badge{display:inline-flex;gap:8px;align-items:center;background:#e8f1ff;color:#1157af;border:1px solid #cfe0fb;border-radius:999px;padding:8px 12px;font-weight:900;font-size:13px;margin-bottom:10px}.login-title{font-size:30px;font-weight:1000;color:#142238;line-height:1.1}.login-subtitle{color:#60708a;margin-top:8px;font-size:14px}.login-icons{display:flex;gap:12px}.login-icon{width:60px;height:60px;border-radius:18px;background:white;display:flex;align-items:center;justify-content:center;font-size:32px;box-shadow:0 12px 25px rgba(29,103,193,.14);border:1px solid #dce5f0}.login h1{font-size:30px;margin-bottom:8px}.login p{color:#60708a;margin-bottom:18px}.login-actions{display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px}.login-footer{margin-top:16px;padding:14px;border-radius:16px;background:#f7faff;border:1px solid #dce6f2;color:#60708a;font-size:13px;line-height:1.45}.field{width:100%;padding:13px 14px;border:1px solid #cfdcea;border-radius:12px;margin:8px 0;background:#fff;outline:none}.field:focus{border-color:#1d67c1;box-shadow:0 0 0 4px rgba(29,103,193,.12)}.bo-search{display:grid;grid-template-columns:1fr 260px;gap:14px;margin-top:18px}.bo-search input,.bo-search select{margin:0}.bo-table{overflow:hidden;border-radius:18px;border:1px solid #dce5f0;background:#fff;box-shadow:0 10px 28px rgba(39,59,88,.08)}.bo-head{background:linear-gradient(135deg,#1457af,#0b376d);color:#fff}.bo-row{transition:.18s}.bo-row:hover{background:#f4f8ff}.bo-id{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:1000;color:#fff}.bo-id.fire{background:linear-gradient(135deg,#ff5c4d,#b90e12)}.bo-id.med{background:linear-gradient(135deg,#47a4ff,#1457b8)}.bo-points{display:inline-flex;align-items:center;justify-content:center;min-width:48px;height:36px;border-radius:12px;background:#edf5ff;color:#1269d3;font-weight:1000}.bo-cd{display:inline-flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:12px;background:#fff5db;color:#9a6900;font-weight:900}.bo-note{color:#60708a;font-size:14px;line-height:1.4}@media(max-width:650px){.bo-search{grid-template-columns:1fr}}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{background:#fff;border:1px solid #d8e3f0;border-radius:13px;overflow:hidden;box-shadow:0 10px 26px rgba(39,59,88,.08)}
+    .card.red{border-color:#f1b9b9}.card.blue{border-color:#b6cff5}.card.pink{border-color:#efc1dc}
+    .hero{height:230px;display:grid;grid-template-columns:180px 1fr;align-items:center;padding:20px;position:relative;overflow:hidden;border-bottom:2px solid var(--accent);background:linear-gradient(90deg,rgba(255,255,255,.88),rgba(255,255,255,.82)),var(--bg);background-size:cover;background-position:center}
+    .hero::before{content:'';position:absolute;inset:0;backdrop-filter:blur(1px)}.hero>*{position:relative;z-index:2}.logo{width:145px;height:145px;display:flex;align-items:center;justify-content:center}.logo img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 18px rgba(0,0,0,.18))}.org-title{font-size:22px;line-height:1.1;font-weight:1000;text-transform:uppercase;color:var(--accent)}.org-sub{font-size:14px;font-weight:700;letter-spacing:1px;margin:6px 0 18px}.leader{display:flex;align-items:center;gap:10px}.leader-icon{width:38px;height:38px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px}
+    .table{padding:18px 22px}.tr{display:grid;grid-template-columns:1.2fr 1.35fr .45fr;align-items:center;min-height:42px;border-bottom:1px solid #e4ebf4;font-size:15px}.th{font-weight:900;text-transform:uppercase;font-size:13px}.vk{color:#1269d3;text-decoration:underline}.points{font-size:22px;font-weight:1000;color:var(--accent)}
+    .status{margin:0 18px 20px;border-radius:10px;overflow:hidden;border:1px solid #edf1f7;background:#fbfdff}.sr{display:grid;grid-template-columns:150px repeat(3,1fr);min-height:48px;border-bottom:1px solid #edf1f7;align-items:center}.sr:last-child{border-bottom:0}.sl{height:100%;display:flex;align-items:center;gap:10px;background:rgba(245,248,252,.9);font-weight:1000;text-transform:uppercase;padding-left:14px}.cell{display:flex;justify-content:center;align-items:center}.sq{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:1000;background:#fff;box-shadow:0 4px 10px rgba(0,0,0,.06)}.sq.red{border:3px solid #ff211b;color:#ff211b}.sq.yellow{border:3px solid #ffc400;color:#4d5a6d}.sq.green{border:3px solid #2eae59;color:#2eae59}.date-text{grid-column:span 2;font-size:19px;font-weight:800}
+    .bottom{display:grid;grid-template-columns:1.05fr .85fr;gap:18px;margin-top:20px}.panel{background:#fff;border:1px solid #dce5f0;border-radius:13px;box-shadow:0 10px 26px rgba(39,59,88,.07);padding:22px}.panel h2{font-size:20px;margin-bottom:16px}.watch-row{display:grid;grid-template-columns:1.2fr .65fr .8fr 1fr;align-items:center;min-height:42px;border-bottom:1px solid #e4ebf4}.mark{width:32px;height:32px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#2d83eb,#1157af);color:#fff;margin-right:12px;box-shadow:0 6px 14px rgba(17,87,175,.25)}.legend{display:grid;grid-template-columns:1fr 1fr;gap:18px}.legend-row{display:flex;align-items:center;gap:14px;margin:12px 0}.ambulance{font-size:120px;opacity:.07;text-align:right}
+    .forms{display:grid;grid-template-columns:1fr 1fr;gap:18px}.request-card{background:#f7faff;border:1px solid #dce6f2;border-radius:14px;padding:16px;margin:10px 0}.badge{display:inline-flex;padding:5px 10px;border-radius:20px;background:#dceaff;color:#1157af;font-weight:900;font-size:13px}.approved{background:#dff6e7;color:#168043}.denied{background:#ffe1df;color:#c92b25}.pending{background:#fff3c4;color:#8c6100}.shop{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.shop-card{background:#fff;border:1px solid #dce5f0;border-radius:16px;padding:20px;box-shadow:0 8px 22px rgba(39,59,88,.07)}.cabinet-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}.mini-stat{background:#f7faff;border:1px solid #dce6f2;border-radius:14px;padding:16px;margin-top:10px}.exchange-status{display:grid;gap:10px}.shop-card .big{font-size:35px;margin-bottom:12px}.danger-timer{margin:14px 18px 18px;padding:12px 14px;border-radius:12px;background:#fff1f1;border:1px solid #ffc9c9;color:#c92b25;font-weight:900}.danger-timer span{color:#152033}.muted{color:#60708a}.hidden{display:none!important}
+    .toast{position:fixed;right:18px;bottom:18px;background:#13233b;color:#fff;border-radius:14px;padding:14px 18px;box-shadow:0 12px 35px rgba(0,0,0,.25);z-index:50;opacity:0;transform:translateY(15px);transition:.25s}.toast.show{opacity:1;transform:translateY(0)}
+    @media(max-width:1200px){.topbar{height:auto;grid-template-columns:1fr;padding-left:0;padding-top:78px}.profile{width:100%;height:74px;justify-content:flex-start}.nav{grid-column:1;order:3;height:64px}.profile{justify-content:center}.cards,.forms,.shop{grid-template-columns:1fr}.bottom{grid-template-columns:1fr}.hero{grid-template-columns:170px 1fr}.logo{width:130px;height:130px;font-size:70px}.org-title{font-size:24px}}
+    @media(max-width:650px){.app{padding:10px}.topbar{grid-template-columns:1fr;padding-top:96px}.top-item,.profile,.nav{grid-column:auto}.nav{height:auto;flex-direction:column}.nav button{width:100%;height:54px}.hero{grid-template-columns:1fr;text-align:center}.logo{margin:auto}.leader{justify-content:center}.sr{grid-template-columns:120px repeat(3,1fr)}.date-text{font-size:15px}.watch-row{grid-template-columns:1fr}.legend{grid-template-columns:1fr}}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+  <div id="app"></div>
+  <div id="toast" class="toast"></div>
+
+  <script>
+    // ===== НАСТРОЙКА ОТПРАВКИ КОДА НА ПОЧТУ =====
+    // Нужно зарегистрироваться на EmailJS.com и заменить эти 3 значения на свои.
+    // Без этого код не сможет реально уходить на почту из обычного HTML-файла.
+    const EMAILJS_PUBLIC_KEY = '62iIi5ftA1vYYkYgt';
+    const EMAILJS_SERVICE_ID = 'service_nqowlox';
+    const EMAILJS_TEMPLATE_ID = 'template_6v03ktf';
+
+    function isEmailServiceReady(){
+      return EMAILJS_PUBLIC_KEY &&
+             EMAILJS_SERVICE_ID &&
+             EMAILJS_TEMPLATE_ID &&
+             !EMAILJS_PUBLIC_KEY.includes('PASTE_') &&
+             !EMAILJS_SERVICE_ID.includes('PASTE_') &&
+             !EMAILJS_TEMPLATE_ID.includes('PASTE_') &&
+             typeof emailjs !== 'undefined';
+    }
+
+    window.addEventListener('load', () => {
+      if(typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY && !EMAILJS_PUBLIC_KEY.includes('PASTE_')){
+        emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+      }
+    });
+
+    const users = [
+      {
+        login:'Soda_LaFlare',
+        pass:'12121973Sodix',
+        role:'Разработчик сайта',
+        name:'Soda_LaFlare',
+        org:'all',
+        email:'staskillaaa@gmail.com'
+      }
+    ];
+
+    const defaultState = {
+      user:null,
+      tab:'orgs',
+      orgs:[
+        {name:'FIRE DEPARTMENT', short:'ПЧ', color:'red', logo:'fire', accent:'#d91c1c', leader:'Tawer Kumar', points:31, max:50, date:'2026-04-21', deputies:['-','-','-'], reprimands:0, oral:1},
+        {name:'LOS-SANTOS MEDICAL CENTER', short:'МЦЛС', color:'blue', logo:'med', accent:'#2a6fd6', leader:'Ryder Choppa', points:46, max:50, date:'2026-04-11', deputies:['-','-','-'], reprimands:0, oral:0},
+        {name:'LAS-VENTURAS MEDICAL CENTER', short:'МЦЛВ', color:'pink', logo:'hospital', accent:'#b51c6e', leader:'Georgy Grom', points:50, max:50, date:'2026-04-17', deputies:['-','-','-'], reprimands:0, oral:0}
+      ],
+      requests:[],
+      boList:[
+        {id:'МЗ | 1',task:'Провести от 3-х RP ситуаций',points:4,cooldown:'Раз в 48 ч.',note:'Мин. 4 сотрудника, хороший отыгрыш'},
+        {id:'МЗ | 2',task:'Участие в глобальной RP ситуации',points:2,cooldown:'Без КД',note:'—'},
+        {id:'МЗ | 3',task:'Создание промо-ролика об организации',points:15,cooldown:'1 раз за срок',note:'От 5 до 15 баллов'},
+        {id:'МЗ | 4',task:'Общая РП Министерства Здравоохранения',points:2,cooldown:'Раз в 48 ч.',note:'Лидер/зам + состав'},
+        {id:'МЗ | 5',task:'Сделать x2 онлайн во фракции',points:2,cooldown:'Раз в 48 ч.',note:'МЦЛС: 14 / МЦЛВ: 10 чел.'},
+        {id:'МЗ | 6',task:'5 лекций за день',points:2,cooldown:'Раз в 72 ч.',note:'КД на лекции: 30 мин'},
+        {id:'МЗ | 7',task:'4 практики за день',points:2,cooldown:'2 раза в неделю',note:'—'},
+        {id:'МЗ | 8',task:'8 собеседований за день',points:3,cooldown:'Раз в 48 ч.',note:'—'},
+        {id:'МЗ | 9',task:'Вылечить 30 игроков',points:2,cooldown:'Раз в 48 ч.',note:'—'},
+        {id:'МЗ | 10',task:'3 проверки мед.карт другой организации',points:2,cooldown:'Раз в 72 ч.',note:'—'},
+        {id:'МЗ | 11',task:'Лекции "ПМП" для 3 организаций',points:2,cooldown:'Раз в 72 ч.',note:'—'},
+        {id:'МЗ | 12',task:'Общая тренировка МЗ',points:2,cooldown:'Раз в 48 ч.',note:'Лидер/зам + состав'},
+        {id:'МЗ | 13',task:'Проверить склад в Мин.обороны',points:2,cooldown:'Раз в 72 ч.',note:'Проверка рефлексов, не медкарты'},
+        {id:'МЗ | 14',task:'Мероприятие с сотрудниками (тема МЗ)',points:2,cooldown:'Раз в 48 ч.',note:'3 скрина от 2 сотрудников'},
+        {id:'МЗ | 15',task:'Интервью/подкаст в СМИ (лидер/зам)',points:2,cooldown:'Раз в неделю',note:'—'},
+        {id:'МЗ | 16',task:'Брифинг для сотрудников',points:2,cooldown:'2 раза в неделю',note:'—'},
+        {id:'МЗ | 17',task:'Проверка медикаментов (3 организации)',points:2,cooldown:'Раз в 72 ч.',note:'—'},
+        {id:'МЗ | 18',task:'РП ситуация "Донорство"',points:2,cooldown:'Раз в 48 ч.',note:'—'},
+        {id:'МЗ | 19',task:'Проверка на алкоголь (3 организации)',points:2,cooldown:'Раз в 48 ч.',note:'—'},
+        {id:'МЗ | 20',task:'Обучение ПМП (своих/других)',points:3,cooldown:'Раз в 72 ч.',note:'—'},
+        {id:'МЗ | 21',task:'Мед. проверка граждан вне организации',points:3,cooldown:'Раз в 48 ч.',note:'Курение, алкоголизм'},
+        {id:'МЗ | 22',task:'Выдать 20 мед.карт',points:2,cooldown:'Раз в неделю',note:'—'},
+        {id:'МЗ | 23',task:'Перевозка медикаментов (5 раз)',points:2,cooldown:'Раз в 72 ч.',note:'—'},
+        {id:'МЗ | 24',task:'Блокпост с МО',points:2,cooldown:'2 раза в неделю',note:'Проверки + помощь'},
+
+        {id:'ПЧ | 1',task:'Провести от 3-х RP ситуаций',points:4,cooldown:'Раз в 48 ч.',note:'Мин. 4 сотрудника'},
+        {id:'ПЧ | 2',task:'Участие в глобальной RP ситуации',points:2,cooldown:'Без КД',note:'—'},
+        {id:'ПЧ | 3',task:'Проверка 4 бизнесов (пожарная сигнал.)',points:2,cooldown:'Раз в 72 ч.',note:'—'},
+        {id:'ПЧ | 4',task:'Создание промо-ролика об организации',points:15,cooldown:'1 раз за срок',note:'—'},
+        {id:'ПЧ | 5',task:'Устранить 2 пожара 3-й степени',points:3,cooldown:'Раз в 48 ч.',note:'Успешно устранить'},
+        {id:'ПЧ | 6',task:'Сделать онлайн во фракции (20 чел.)',points:2,cooldown:'Раз в 48 ч.',note:'—'},
+        {id:'ПЧ | 7',task:'5 лекций за день',points:2,cooldown:'Раз в 72 ч.',note:'КД 30 мин'},
+        {id:'ПЧ | 8',task:'4 практики за день',points:2,cooldown:'2 раза в неделю',note:'—'},
+        {id:'ПЧ | 9',task:'8 собеседований за день',points:3,cooldown:'Раз в 48 ч.',note:'—'},
+        {id:'ПЧ | 10',task:'Общая РП с МЗ (МЦЛС, МЦЛВ)',points:2,cooldown:'Раз в 72 ч.',note:'—'},
+        {id:'ПЧ | 11',task:'3 проверки пожарной системы',points:2,cooldown:'Раз в 72 ч.',note:'Другая организация'},
+        {id:'ПЧ | 12',task:'Лекции "Правила при пожаре" (3 орг.)',points:2,cooldown:'Раз в 72 ч.',note:'—'},
+        {id:'ПЧ | 13',task:'Мероприятие с сотрудниками (тема ПЧ)',points:2,cooldown:'Раз в 48 ч.',note:'3 скрина от 2 сотрудников'},
+        {id:'ПЧ | 14',task:'Интервью/подкаст в СМИ',points:2,cooldown:'Раз в неделю',note:'—'},
+        {id:'ПЧ | 15',task:'Брифинг для сотрудников',points:2,cooldown:'2 раза в неделю',note:'—'}
+      ],
+      exchanges:[],
+      exchangeRequests:[],
+      logs:[],
+      staffApplications:[],
+      registeredUsers:[],
+      passwordOverrides:{}
+    };
+
+    let state = JSON.parse(localStorage.getItem('ems-crm-v2')) || defaultState;
+
+    // Фикс для старых сохранений: если сайт уже открывался раньше,
+    // localStorage мог сохранить старую версию без вкладки БО.
+    // Поэтому добавляем недостающие данные автоматически.
+    state.boList = defaultState.boList;
+
+    // Исправление сломанных картинок: старые ссылки imgur заменяются на встроенные SVG-логотипы
+    state.orgs.forEach(org => {
+      if(org.short === 'ПЧ') org.logo = 'fire';
+      if(org.short === 'МЦЛС') org.logo = 'med';
+      if(org.short === 'МЦЛВ') org.logo = 'hospital';
+    });
+
+    // Возвращаем слоты заместителей, но не очищаем их каждый раз.
+    // Если в старом сохранении нет массива заместителей — создаём 3 пустых слота.
+    state.orgs.forEach(org => {
+      if(!Array.isArray(org.deputies)) org.deputies = ['-','-','-'];
+      while(org.deputies.length < 3) org.deputies.push('-');
+    });
+    if(!state.requests) state.requests = [];
+    if(!state.exchanges) state.exchanges = [];
+    if(!state.exchangeRequests) state.exchangeRequests = [];
+    if(!state.logs) state.logs = [];
+    if(!state.staffApplications) state.staffApplications = [];
+    if(!state.registeredUsers) state.registeredUsers = [];
+    if(!state.passwordOverrides) state.passwordOverrides = {};
+
+    state.orgs.forEach(org => {
+      if(org.reprimands >= 3 && !org.warnDeadline){
+        org.warnDeadline = Date.now() + 24 * 60 * 60 * 1000;
+      }
+      if(org.reprimands < 3){
+        org.warnDeadline = null;
+      }
+    });
+
+    save();
+    const app = document.getElementById('app');
+    const toast = document.getElementById('toast');
+    let resetData = null;
+
+    function save(){localStorage.setItem('ems-crm-v2', JSON.stringify(state));}
+    function notify(text){toast.textContent=text;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2200)}
+    function isDeveloper(){
+      return state.user && state.user.role === 'Разработчик сайта';
+    }
+
+    function canAdmin(){
+      return state.user && (
+        isDeveloper() ||
+        state.user.role === 'Главный следящий' ||
+        state.user.role === 'Заместитель главного следящего' ||
+        state.user.role === 'Следящий'
+      );
+    }
+
+    function canManageStaff(){
+      return state.user && (
+        isDeveloper() ||
+        state.user.role === 'Главный следящий' ||
+        state.user.role === 'Заместитель главного следящего'
+      );
+    }
+
+    function canReviewStaffApplication(type){
+      if(!state.user) return false;
+      if(type === 'Лидер') return canManageStaff();
+      if(type === 'Заместитель') return canAdmin();
+      return false;
+    }
+    function canUseOrg(org){return canAdmin() || state.user?.org===org}
+    function daysPassed(date){
+      const startDate = new Date(date);
+      const currentDate = new Date();
+      const difference = currentDate.getTime() - startDate.getTime();
+      let days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      if(days < 0) days = 0;
+      if(days > 30) days = 30;
+      return days;
+    }
+
+    function setWarnDeadline(org){
+      if(org.reprimands >= 3 && !org.warnDeadline){
+        org.warnDeadline = Date.now() + 24 * 60 * 60 * 1000;
+      }
+      if(org.reprimands < 3){
+        org.warnDeadline = null;
+      }
+    }
+
+    function formatWarnTime(org){
+      if(!org.warnDeadline) return '';
+      const left = org.warnDeadline - Date.now();
+      if(left <= 0) return '00:00:00';
+      const h = Math.floor(left / (1000 * 60 * 60));
+      const m = Math.floor((left % (1000 * 60 * 60)) / (1000 * 60));
+      const s = Math.floor((left % (1000 * 60)) / 1000);
+      return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+
+    // Автоматическое обновление дней отстоя
+    function autoUpdateDays(){
+      state.orgs.forEach(org => {
+        org.days = daysPassed(org.date);
+      });
+      save();
+    }
+
+    autoUpdateDays();
+    function setTab(tab){state.tab=tab;save();render()}
+    
+    const ADMIN_PANEL_LOGIN = 'admin';
+    const ADMIN_PANEL_PASSWORD = 'admin911';
+    function openAdminPanel(){
+      if(!canAdmin()) return notify('Нет доступа');
+      setTab('admin');
+    }
+    function unlockAdminPanel(){
+      setTab('admin');
+    }
+    function lockAdminPanel(){
+      setTab('orgs');
+      notify('Панель управления закрыта');
+    }
+
+    function login(){
+      const login=document.getElementById('login').value.trim();
+      const pass=document.getElementById('pass').value.trim();
+
+      const pendingApplication = state.staffApplications.find(a =>
+        a.nick.toLowerCase() === login.toLowerCase() &&
+        a.password === pass &&
+        a.status === 'На рассмотрении'
+      );
+
+      if(pendingApplication){
+        return notify('Ваши данные на обработке. Ожидайте рассмотрения анкеты');
+      }
+
+      const deniedApplication = state.staffApplications.find(a =>
+        a.nick.toLowerCase() === login.toLowerCase() &&
+        a.password === pass &&
+        a.status === 'Отказано'
+      );
+
+      if(deniedApplication){
+        return notify('Ваша заявка была отклонена');
+      }
+
+      const allUsers = [...users, ...state.registeredUsers];
+      const user=allUsers.find(u=>u.login===login && ((state.passwordOverrides && state.passwordOverrides[u.login]) || u.pass)===pass);
+
+      if(!user) return notify('Неверный ник или пароль');
+
+      state.user=user;
+      state.tab='orgs';
+      save();
+      render();
+    }
+    function logout(){state.user=null;save();render()}
+
+    function loginScreen(){
+      app.innerHTML=`<div class="login">
+        <div class="login-hero">
+          <div>
+            <div class="login-badge">🏥 Arizona RP • МЗ</div>
+            <div class="login-title">Министерство здравоохранения</div>
+            <div class="login-subtitle">Панель управления ПЧ, МЦЛС и МЦЛВ</div>
+          </div>
+          <div class="login-icons">
+            <div class="login-icon">🚑</div>
+            <div class="login-icon">🚒</div>
+            <div class="login-icon">⚕️</div>
+          </div>
+        </div>
+        <div class="login-inner">
+          <h1>Вход в аккаунт</h1>
+          <p>Введите никнейм и пароль, чтобы открыть личный кабинет.</p>
+          <input id="login" class="field" placeholder="Ник / логин">
+          <input id="pass" class="field" placeholder="Пароль" type="password">
+          <div class="login-actions">
+            <button onclick="login()">Войти в систему</button>
+            <button class="btn-light" onclick="registerScreen()">Регистрация / заявка</button>
+            <button class="btn-light" onclick="forgotPasswordScreen()">Забыли пароль?</button>
+          </div>
+          <div class="login-footer">
+            🔐 Доступ выдаётся после одобрения анкеты администрацией.<br>
+            Лидеры и заместители видят только свою организацию.
+          </div>
+        </div>
+      </div>`
+    }
+
+    function forgotPasswordScreen(){
+      resetData = null;
+      app.innerHTML=`<div class="login">
+        <h1>Восстановление пароля</h1>
+        <p>Введите логин и почту, которая была указана при регистрации. Код восстановления будет отправлен на указанную почту.</p>
+        <input id="resetLogin" class="field" placeholder="Логин / никнейм">
+        <input id="resetEmail" class="field" placeholder="Почта">
+        <button onclick="sendResetCode()">Получить код</button>
+        <button class="btn-light" onclick="loginScreen()">Назад</button>
+        <div id="resetBox"></div>
+      </div>`;
+    }
+
+    function findUserForReset(login,email){
+      const allUsers=[...users,...state.registeredUsers];
+      return allUsers.find(u=>
+        u.login.toLowerCase()===login.toLowerCase() &&
+        ((u.email || u.contact || '').toLowerCase()===email.toLowerCase())
+      );
+    }
+
+    function sendResetCode(){
+      const login=document.getElementById('resetLogin').value.trim();
+      const email=document.getElementById('resetEmail').value.trim();
+      if(!login || !email) return notify('Введите логин и почту');
+
+      const pending=state.staffApplications.find(a=>
+        a.nick.toLowerCase()===login.toLowerCase() &&
+        a.contact.toLowerCase()===email.toLowerCase() &&
+        a.status==='На рассмотрении'
+      );
+      if(pending) return notify('Анкета ещё на обработке. Восстановление доступно после одобрения');
+
+      const user=findUserForReset(login,email);
+      if(!user) return notify('Аккаунт с такой почтой не найден');
+
+      const code=String(Math.floor(100000 + Math.random()*900000));
+      resetData={login:user.login,email,code,expires:Date.now()+10*60*1000};
+
+      document.getElementById('resetBox').innerHTML=`
+        <div class="mini-stat">
+          Отправляем код на почту: <b>${email}</b>...
+        </div>
+      `;
+
+      sendResetEmail(email, user.login, code);
+    }
+
+    function sendResetEmail(email, login, code){
+      if(!isEmailServiceReady()){
+        document.getElementById('resetBox').innerHTML=`
+          <div class="mini-stat" style="border-color:#ffc9c9;background:#fff1f1">
+            EmailJS ещё не настроен. В коде нужно заменить:<br>
+            <b>EMAILJS_PUBLIC_KEY</b><br>
+            <b>EMAILJS_SERVICE_ID</b><br>
+            <b>EMAILJS_TEMPLATE_ID</b><br><br>
+            После настройки код будет приходить на почту.
+          </div>
+        `;
+        notify('Сервис отправки почты не настроен');
+        return;
+      }
+
+      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_email: email,
+        email: email,
+        name: 'Emergency Services CRM',
+        title: 'Восстановление пароля',
+        message: `Ваш логин: ${login}
+Ваш код восстановления: ${code}
+Код действует 10 минут.`,
+        user_login: login,
+        reset_code: code,
+        project_name: 'Emergency Services CRM'
+      }).then(() => {
+        document.getElementById('resetBox').innerHTML=`
+          <div class="mini-stat">
+            Код отправлен на почту: <b>${email}</b><br>
+            Проверьте входящие или папку спам.
+          </div>
+          <input id="resetCode" class="field" placeholder="Код из письма">
+          <input id="newPass1" class="field" type="password" placeholder="Новый пароль">
+          <input id="newPass2" class="field" type="password" placeholder="Повторите новый пароль">
+          <button onclick="confirmPasswordReset()">Сменить пароль</button>
+        `;
+        notify('Код отправлен на почту');
+      }).catch(() => {
+        document.getElementById('resetBox').innerHTML=`
+          <div class="mini-stat" style="border-color:#ffc9c9;background:#fff1f1">
+            Не удалось отправить письмо. Проверьте настройки EmailJS.
+          </div>
+        `;
+        notify('Ошибка отправки письма');
+      });
+    }
+
+    function confirmPasswordReset(){
+      if(!resetData) return notify('Сначала получите код');
+      if(Date.now()>resetData.expires) return notify('Код устарел, получите новый');
+
+      const code=document.getElementById('resetCode').value.trim();
+      const pass1=document.getElementById('newPass1').value.trim();
+      const pass2=document.getElementById('newPass2').value.trim();
+
+      if(code!==resetData.code) return notify('Неверный код');
+      if(!pass1 || !pass2) return notify('Введите новый пароль два раза');
+      if(pass1!==pass2) return notify('Пароли не совпадают');
+      if(!isStrongPassword(pass1)) return notify('Пароль слишком лёгкий');
+
+      const regUser=state.registeredUsers.find(u=>u.login.toLowerCase()===resetData.login.toLowerCase());
+      if(regUser){
+        regUser.pass=pass1;
+      } else {
+        state.passwordOverrides[resetData.login]=pass1;
+      }
+
+      state.logs.unshift(`Восстановлен пароль для аккаунта ${resetData.login}`);
+      resetData=null;
+      save();
+      notify('Пароль успешно изменён');
+      loginScreen();
+    }
+
+    function registerScreen(){
+      app.innerHTML=`<div class="login">
+        <h1>Регистрация / заявка</h1>
+        <p>Выберите, на какую должность хотите подать заявку. Заявки на лидера рассматривают только главный следящий и заместитель главного следящего. Заявки на заместителя могут рассматривать следящие.</p>
+        <input id="regNick" class="field" placeholder="Ваш никнейм">
+        <input id="regVk" class="field" placeholder="Почта для восстановления / связь">
+        <input id="regPass1" class="field" type="password" placeholder="Придумайте пароль">
+        <input id="regPass2" class="field" type="password" placeholder="Повторите пароль">
+        <div class="mini-stat" style="margin:8px 0">
+          Пароль: минимум 8 символов, большая буква, маленькая буква, цифра и спец. символ.
+        </div>
+        <select id="regOrg" class="field">${state.orgs.map(o=>`<option>${o.name}</option>`).join('')}</select>
+        <select id="regType" class="field">
+          <option>Лидер</option>
+          <option>Заместитель</option>
+        </select>
+        
+        <button onclick="sendStaffApplication()">Отправить заявку</button>
+        <button class="btn-light" onclick="loginScreen()">Назад ко входу</button>
+      </div>`;
+    }
+
+    function isStrongPassword(pass){
+      const hasUpper = Array.from(pass).some(ch => ch >= 'A' && ch <= 'Z' || ch >= 'А' && ch <= 'Я');
+      const hasLower = Array.from(pass).some(ch => ch >= 'a' && ch <= 'z' || ch >= 'а' && ch <= 'я');
+      const hasDigit = Array.from(pass).some(ch => ch >= '0' && ch <= '9');
+      const hasSpecial = Array.from(pass).some(ch => !((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || (ch >= 'А' && ch <= 'Я') || (ch >= 'а' && ch <= 'я') || (ch >= '0' && ch <= '9')));
+      return pass.length >= 8 && hasUpper && hasLower && hasDigit && hasSpecial;
+    }
+
+    function sendStaffApplication(){
+      const nick=document.getElementById('regNick').value.trim();
+      const contact=document.getElementById('regVk').value.trim();
+      const pass1=document.getElementById('regPass1').value.trim();
+      const pass2=document.getElementById('regPass2').value.trim();
+      const org=document.getElementById('regOrg').value;
+      const type=document.getElementById('regType').value;
+      const comment='';
+      const allUsers=[...users,...state.registeredUsers];
+
+      if(!nick || !contact) return notify('Заполни ник и связь');
+      if(allUsers.some(u=>u.login.toLowerCase()===nick.toLowerCase())) return notify('Такой ник уже зарегистрирован');
+      if(state.staffApplications.some(a=>a.nick.toLowerCase()===nick.toLowerCase() && a.status==='На рассмотрении')) return notify('Заявка с таким ником уже на рассмотрении');
+      if(!pass1 || !pass2) return notify('Введите пароль два раза');
+      if(pass1 !== pass2) return notify('Пароли не совпадают');
+      if(!isStrongPassword(pass1)) return notify('Пароль слишком лёгкий');
+
+      state.staffApplications.unshift({
+        id:Date.now(),nick,contact,password:pass1,org,type,comment,
+        status:'На рассмотрении',date:new Date().toLocaleString('ru-RU')
+      });
+      state.logs.unshift(`${nick} отправил заявку на ${type}: ${org}`);
+      save();
+      notify('Заявка отправлена. После одобрения можно будет войти');
+      loginScreen();
+    }
+
+    function staffApplicationView(r){
+      return `<div class="request-card"><b>${r.nick}</b> — ${r.type} в ${r.org}<br><span class="muted">Связь:</span> ${r.contact}<br><span class="muted">Дата:</span> ${r.date}<br>${r.status==='Одобрено' ? `<span class="muted">Логин для входа:</span> <b>${r.nick}</b><br>` : ''}<br><span class="badge ${r.status==='Одобрено'?'approved':r.status==='Отказано'?'denied':'pending'}">${r.status}</span><br><br>${r.status==='На рассмотрении' && canReviewStaffApplication(r.type) ? `<button class="btn-green" onclick="approveStaffApplication(${r.id})">Одобрить</button><button class="btn-red" onclick="denyStaffApplication(${r.id})">Отказать</button>` : ''}</div>`;
+    }
+
+    function approveStaffApplication(id){
+      const r=state.staffApplications.find(x=>x.id===id);if(!r)return;
+      if(!canReviewStaffApplication(r.type)) return notify('Нет доступа к этой заявке');
+      const org=state.orgs.find(o=>o.name===r.org);if(!org)return;
+      if(r.type==='Лидер') org.leader=r.nick;
+      if(r.type==='Заместитель'){
+        const emptySlot=org.deputies.findIndex(d=>d==='-' || !d);
+        const slot=emptySlot>=0 ? emptySlot : 0;
+        org.deputies[slot]=r.nick;
+      }
+      r.status='Одобрено';
+
+      const newUser={
+        login:r.nick,
+        pass:r.password,
+        role:r.type,
+        name:r.nick,
+        org:r.org,
+        email:r.contact
+      };
+
+      if(!state.registeredUsers.some(u=>u.login.toLowerCase()===r.nick.toLowerCase())){
+        state.registeredUsers.push(newUser);
+      }
+
+      state.logs.unshift(`${state.user.name} одобрил заявку ${r.nick} на ${r.type} в ${r.org}. Аккаунт создан.`);
+      save();notify('Заявка одобрена');render();
+    }
+
+    function denyStaffApplication(id){
+      const r=state.staffApplications.find(x=>x.id===id);if(!r)return;
+      if(!canReviewStaffApplication(r.type)) return notify('Нет доступа к этой заявке');
+      r.status='Отказано';
+      state.logs.unshift(`${state.user.name} отказал заявку ${r.nick} на ${r.type} в ${r.org}`);
+      save();notify('Заявка отказана');render();
+    }
+
+    function topbar(){
+      const d=new Date();
+      return `<div class="topbar">
+        <div class="profile"><div class="avatar">👨‍💼</div><div class="profile-info"><span class="profile-role">${state.user.role}</span><span class="profile-name" onclick="setTab('cabinet')">${state.user.name}</span><span class="muted">${state.user.org === 'all' ? 'Все организации' : state.user.org}</span></div><button class="btn-light" onclick="logout()">Выйти</button></div>
+        <div class="top-item"><div class="top-ico">◷</div><div><div class="top-small">Дата и время</div><div class="top-bold">${d.toLocaleDateString('ru-RU')} • ${d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}</div></div></div>
+        <div class="nav">
+          <button class="${state.tab==='cabinet'?'active':''}" onclick="setTab('cabinet')">👤 Личный кабинет</button>
+          ${!canAdmin() ? `<button class="${state.tab==='request'?'active':''}" onclick="setTab('request')">📝 Заявление на получение баллов</button>
+          <button class="${state.tab==='exchange'?'active':''}" onclick="setTab('exchange')">💱 Обмен баллов</button>` : ''}
+          <button class="${state.tab==='bo'?'active':''}" onclick="setTab('bo')">📋 БО</button>
+          ${canAdmin()?`<button class="${state.tab==='staffApps'?'active':''}" onclick="setTab('staffApps')">📨 Заявки</button>`:''}
+          <button class="${state.tab==='orgs'?'active':''}" onclick="setTab('orgs')">🏢 Список организаций</button>
+          ${canAdmin()?`<button class="${state.tab==='admin'?'active':''}" onclick="openAdminPanel()">🛠 Панель управления</button>`:''}
+          ${isDeveloper()?`<button class="${state.tab==='dev'?'active':''}" onclick="setTab('dev')">💻 Developer</button>`:''}
+        </div>
+      </div>`
+    }
+
+    function orgLogo(type, accent){
+      if(type === 'fire'){
+        return `<svg viewBox="0 0 260 220" width="150" height="135" aria-label="ПЧ">
+          <defs>
+            <linearGradient id="fdRed" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#ff4545"/><stop offset=".45" stop-color="#a70d12"/><stop offset="1" stop-color="#3a0205"/>
+            </linearGradient>
+            <linearGradient id="fdMetal" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#fff"/><stop offset=".5" stop-color="#d8dee7"/><stop offset="1" stop-color="#687586"/>
+            </linearGradient>
+            <filter id="fdShadow" x="-25%" y="-25%" width="150%" height="150%"><feDropShadow dx="0" dy="8" stdDeviation="6" flood-opacity=".35"/></filter>
+          </defs>
+          <g filter="url(#fdShadow)">
+            <path d="M130 10 L156 52 L216 34 L193 86 L248 110 L193 134 L216 186 L156 168 L130 210 L104 168 L44 186 L67 134 L12 110 L67 86 L44 34 L104 52 Z" fill="url(#fdRed)" stroke="#210003" stroke-width="6"/>
+            <path d="M130 29 L149 62 L190 50 L176 88 L216 110 L176 132 L190 170 L149 158 L130 191 L111 158 L70 170 L84 132 L44 110 L84 88 L70 50 L111 62 Z" fill="none" stroke="#ffdb8b" stroke-width="3" opacity=".9"/>
+            <circle cx="130" cy="110" r="54" fill="url(#fdMetal)" stroke="#1b1b1b" stroke-width="6"/>
+            <circle cx="130" cy="110" r="40" fill="#151923" stroke="#d4a84d" stroke-width="4"/>
+            <text x="130" y="84" text-anchor="middle" font-size="18" font-weight="900" fill="#fff" letter-spacing="3">FIRE</text>
+            <path d="M96 140 L164 80" stroke="#c77a24" stroke-width="8" stroke-linecap="round"/>
+            <path d="M164 140 L96 80" stroke="#c77a24" stroke-width="8" stroke-linecap="round"/>
+            <path d="M130 86 C145 104 141 124 130 140 C119 124 115 104 130 86Z" fill="#ffcf32"/>
+            <path d="M130 96 C138 108 136 122 130 132 C124 122 122 108 130 96Z" fill="#ff3b21"/>
+            
+          </g>
+        </svg>`;
+      }
+      if(type === 'med'){
+        return `<svg viewBox="0 0 260 220" width="150" height="135" aria-label="МЦЛС">
+          <defs>
+            <linearGradient id="mcBlue" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#68b6ff"/><stop offset=".45" stop-color="#164f9d"/><stop offset="1" stop-color="#061733"/>
+            </linearGradient>
+            <linearGradient id="mcSilver" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#fff"/><stop offset=".55" stop-color="#dce5ef"/><stop offset="1" stop-color="#798798"/>
+            </linearGradient>
+            <filter id="mcShadow" x="-25%" y="-25%" width="150%" height="150%"><feDropShadow dx="0" dy="8" stdDeviation="6" flood-opacity=".32"/></filter>
+          </defs>
+          <g filter="url(#mcShadow)">
+            <path d="M130 12 L156 52 L214 42 L194 88 L240 110 L194 132 L214 178 L156 168 L130 208 L104 168 L46 178 L66 132 L20 110 L66 88 L46 42 L104 52 Z" fill="url(#mcBlue)" stroke="#061733" stroke-width="7"/>
+            <circle cx="130" cy="110" r="58" fill="url(#mcSilver)" stroke="#092450" stroke-width="6"/>
+            <path d="M130 55 L145 88 L181 88 L151 110 L163 150 L130 127 L97 150 L109 110 L79 88 L115 88 Z" fill="#145ebd" stroke="#092450" stroke-width="5"/>
+            <circle cx="130" cy="70" r="17" fill="#d72236" stroke="#fff" stroke-width="4"/>
+            <path d="M130 60 V80 M120 70 H140" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+            <path d="M130 89 V146" stroke="#f7fbff" stroke-width="8" stroke-linecap="round"/>
+            <path d="M116 101 C145 108 112 124 142 136" stroke="#f7fbff" stroke-width="7" fill="none" stroke-linecap="round"/>
+            
+          </g>
+        </svg>`;
+      }
+      return `<svg viewBox="0 0 260 220" width="150" height="135" aria-label="МЦЛВ">
+        <defs>
+          <linearGradient id="lvRed" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#ff7a95"/><stop offset=".48" stop-color="#a71943"/><stop offset="1" stop-color="#380515"/>
+          </linearGradient>
+          <linearGradient id="lvSilver" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#fff"/><stop offset=".55" stop-color="#e4e8ee"/><stop offset="1" stop-color="#7d8793"/>
+          </linearGradient>
+          <filter id="lvShadow" x="-25%" y="-25%" width="150%" height="150%"><feDropShadow dx="0" dy="8" stdDeviation="6" flood-opacity=".34"/></filter>
+        </defs>
+        <g filter="url(#lvShadow)">
+          <path d="M130 10 L158 50 L218 34 L194 86 L248 110 L194 134 L218 186 L158 170 L130 210 L102 170 L42 186 L66 134 L12 110 L66 86 L42 34 L102 50 Z" fill="url(#lvRed)" stroke="#2b020f" stroke-width="7"/>
+          <path d="M130 30 L150 62 L190 50 L176 88 L216 110 L176 132 L190 170 L150 158 L130 190 L110 158 L70 170 L84 132 L44 110 L84 88 L70 50 L110 62 Z" fill="none" stroke="#ffc3cf" stroke-width="3" opacity=".8"/>
+          <circle cx="130" cy="110" r="58" fill="url(#lvSilver)" stroke="#5a0924" stroke-width="6"/>
+          <path d="M130 58 L146 91 L182 91 L153 113 L164 151 L130 130 L96 151 L107 113 L78 91 L114 91 Z" fill="#b51c45" stroke="#5a0924" stroke-width="5"/>
+          <rect x="111" y="88" width="38" height="46" rx="7" fill="#d91c3d"/>
+          <path d="M130 96 V126 M115 111 H145" stroke="#fff" stroke-width="8" stroke-linecap="round"/>
+          
+        </g>
+      </svg>`;
+    }
+
+    function orgCards(){
+      return `<div class="cards">${state.orgs.map((o,i)=>{
+        const days=o.days || daysPassed(o.date);
+        return `<div class="card ${o.color}" style="--accent:${o.accent};--bg:url('')">
+          <div class="hero">
+            <div class="logo">${orgLogo(o.logo,o.accent)}</div>
+            <div><div class="org-title">${o.name}</div><div class="org-sub">ARIZONA RP PHOENIX</div><div class="leader"><span class="leader-icon">★</span><div><span class="muted">Лидер</span><br><b>${o.leader}</b></div></div></div>
+          </div>
+          <div class="table">
+            <div class="tr th"><span>Должность</span><span>Сотрудник</span><span>VK</span></div>
+            ${o.deputies.map((d,idx)=>`<div class="tr"><span class="muted">★ Заместитель ${idx+1}</span><b>${d || '-'}</b><span class="muted">—</span></div>`).join('')}
+            <div class="tr th"><span></span><span></span><span style="color:${o.accent}">Баллы <span class="points">${o.points}/${o.max}</span></span></div>
+          </div>
+          <div class="status">
+            <div class="sr"><div class="sl"><span class="sq red" style="width:23px;height:23px;font-size:14px">⛔</span>Выговоры</div>${[1,2,3].map(n=>`<div class="cell"><span class="sq red">${n<=o.reprimands?'⛔':''}</span></div>`).join('')}</div>
+            <div class="sr"><div class="sl"><span class="sq yellow" style="width:23px;height:23px;font-size:14px">⚠</span>Устный</div>${[1,2,3].map(n=>`<div class="cell"><span class="sq yellow">${n<=o.oral?'⚠':''}</span></div>`).join('')}</div>
+            <div class="sr"><div class="sl"><span class="sq green" style="width:23px;height:23px;font-size:14px">🛡</span>Отстоял</div><div class="cell"><span class="sq green">${days>=30?'🛡':'⏳'}</span></div><div class="cell date-text">${days} дней / 30</div></div>
+            <div class="sr"><div class="sl"><span>▣</span>Поставлен</div><div class="cell">▣</div><div class="cell date-text">${new Date(o.date).toLocaleDateString('ru-RU')}</div></div>
+          </div>
+          ${o.reprimands >= 3 ? `<div class="danger-timer">⚠ 3 выговора — осталось на снятие: <span>${formatWarnTime(o)}</span></div>` : ''}
+        </div>`}).join('')}</div>
+        <div class="bottom">
+          <div class="panel"><h2>Условные обозначения</h2><div class="legend"><div>${legendRows()}</div><div><div class="legend-row"><span class="sq red">⛔</span>Выговор выдан</div><div class="legend-row"><span class="sq yellow">⚠</span>Устный выговор выдан</div><div class="legend-row"><span class="sq">−</span>Нет данных</div><div class="ambulance">🚑</div></div></div></div>
+        </div>`
+    }
+    function legendRows(){return `<div class="legend-row"><span class="sq red">⛔</span>Выговор</div><div class="legend-row"><span class="sq yellow">⚠</span>Устный выговор</div><div class="legend-row"><span class="sq green">🛡</span>Отстоял срок</div>`}
+
+    function getMyOrg(){
+      if(canAdmin()) return null;
+      return state.orgs.find(o=>o.name===state.user.org);
+    }
+
+    function cabinetPage(){
+      const myOrg = getMyOrg();
+      const visibleOrgs = canAdmin() ? state.orgs : state.orgs.filter(o=>o.name===state.user.org);
+      const accountEmail = state.user.email || 'Почта не привязана';
+      return `<div class="panel"><h2>Личный кабинет</h2><p class="muted">Здесь отображается информация аккаунта, организации, заявления и заявки на обмен.</p></div>
+      <div class="cabinet-grid">
+        <div class="panel"><h2>Мой аккаунт</h2>
+          <div class="mini-stat">
+            <b>${state.user.name}</b><br>
+            Роль: <b>${state.user.role}</b><br>
+            Организация: <b>${state.user.org === 'all' ? 'Все организации' : state.user.org}</b><br>
+            Почта: <b>${accountEmail}</b>
+          </div>
+          <h2 style="margin-top:18px">Изменить пароль</h2>
+          <input id="oldPass" class="field" type="password" placeholder="Старый пароль">
+          <input id="cabPass1" class="field" type="password" placeholder="Новый пароль">
+          <input id="cabPass2" class="field" type="password" placeholder="Повторите новый пароль">
+          <button onclick="changeMyPassword()">Сменить пароль</button>
+        </div>
+        <div class="panel"><h2>Моя организация</h2>
+          ${myOrg ? `<div class="mini-stat"><b>${myOrg.name}</b><br>Баллы: <b>${myOrg.points}/${myOrg.max}</b><br>Устные: <b>${myOrg.oral}/3</b><br>Выговоры: <b>${myOrg.reprimands}/3</b>${myOrg.reprimands >= 3 ? `<br><span style="color:#c92b25;font-weight:900">На снятие осталось: ${formatWarnTime(myOrg)}</span>` : ''}<br>Отстоял: <b>${myOrg.days || daysPassed(myOrg.date)} дней / 30</b></div>` : '<p class="muted">Следящий видит все организации во вкладке списка.</p>'}
+        </div>
+      </div>
+      <div class="cabinet-grid">
+        <div class="panel"><h2>Быстрые действия</h2>
+          ${canAdmin() ? `
+            <div class="mini-stat">
+              Следящий не может отправлять заявления или обменивать баллы.<br>
+              Доступны только просмотр организаций, БО и панель управления.
+            </div>
+            <button onclick="setTab('bo')">Открыть список БО</button>
+          ` : `
+            <button onclick="setTab('request')">Подать заявление на баллы</button>
+            <button onclick="setTab('exchange')">Обменять баллы</button>
+            <button onclick="setTab('bo')">Открыть список БО</button>
+          `}
+        </div>
+        <div class="panel"><h2>Безопасность</h2><div class="mini-stat">Для смены пароля нужно указать старый пароль. Новый пароль должен быть сложным.</div></div>
+      </div>
+      <div class="forms">
+        <div class="panel"><h2>Мои заявления на баллы</h2>${state.requests.filter(r=>canAdmin()||r.author===state.user.name||r.org===state.user.org).map(reqView).join('')||'<p class="muted">Заявлений пока нет</p>'}</div>
+        <div class="panel"><h2>Мои заявки на обмен</h2>${state.exchangeRequests.filter(r=>canAdmin()||r.author===state.user.name||r.org===state.user.org).map(exchangeReqView).join('')||'<p class="muted">Заявок на обмен пока нет</p>'}</div>
+      </div>`;
+    }
+
+    function changeMyPassword(){
+      const oldPass=document.getElementById('oldPass').value.trim();
+      const pass1=document.getElementById('cabPass1').value.trim();
+      const pass2=document.getElementById('cabPass2').value.trim();
+      const currentPass=(state.passwordOverrides && state.passwordOverrides[state.user.login]) || state.user.pass;
+
+      if(!oldPass || !pass1 || !pass2) return notify('Заполните все поля');
+      if(oldPass !== currentPass) return notify('Старый пароль неверный');
+      if(pass1 !== pass2) return notify('Новые пароли не совпадают');
+      if(!isStrongPassword(pass1)) return notify('Пароль слишком лёгкий');
+
+      const regUser=state.registeredUsers.find(u=>u.login.toLowerCase()===state.user.login.toLowerCase());
+      if(regUser){
+        regUser.pass=pass1;
+        state.user.pass=pass1;
+      } else {
+        state.passwordOverrides[state.user.login]=pass1;
+      }
+
+      state.logs.unshift(`${state.user.name} изменил пароль в личном кабинете`);
+      save();
+      notify('Пароль успешно изменён');
+      render();
+    }
+
+    function requestPage(){
+      return `<div class="forms"><div class="panel"><h2>Заявление на получение баллов</h2>
+        <select id="rOrg" class="field">${state.orgs.filter(o=>canUseOrg(o.name)).map(o=>`<option>${o.name}</option>`).join('')}</select>
+        <input id="rNick" class="field" placeholder="Никнейм лидера / заместителя">
+        <input id="rBo" class="field" placeholder="Пункт БО">
+        <input id="rPoints" class="field" type="number" placeholder="Количество баллов">
+        <input id="rProof" class="field" placeholder="Ссылка на доказательства">
+        <textarea id="rComment" class="field" rows="4" placeholder="Комментарий"></textarea>
+        <button onclick="sendRequest()">Отправить заявление</button>
+      </div><div class="panel"><h2>Мои заявления</h2>${state.requests.filter(r=>canAdmin()||r.author===state.user.name||r.org===state.user.org).map(reqView).join('')||'<p class="muted">Заявлений пока нет</p>'}</div></div>`
+    }
+    function sendRequest(){
+      const req={id:Date.now(),org:rOrg.value,nick:rNick.value.trim(),bo:rBo.value.trim(),points:+rPoints.value,proof:rProof.value.trim(),comment:rComment.value.trim(),status:'На рассмотрении',date:new Date().toLocaleString('ru-RU'),author:state.user.name};
+      if(!req.nick||!req.bo||!req.points)return notify('Заполни ник, пункт БО и баллы');
+      state.requests.unshift(req);state.logs.unshift(`${state.user.name} отправил БО на ${req.points} баллов для ${req.org}`);save();notify('Заявление отправлено');render();
+    }
+    function reqView(r){return `<div class="request-card"><b>${r.nick}</b> — ${r.org}<br><span class="muted">Пункт БО:</span> ${r.bo}<br><span class="muted">Баллы:</span> <b>${r.points}</b><br><span class="muted">Доказательства:</span> <a class="vk" target="_blank" href="${r.proof}">${r.proof||'нет'}</a><br><span class="muted">Дата:</span> ${r.date}<br><br><span class="badge ${r.status==='Одобрено'?'approved':r.status==='Отказано'?'denied':'pending'}">${r.status}</span></div>`}
+
+    function exchangeReqView(r){return `<div class="request-card"><b>${r.author}</b> — ${r.org}<br><span class="muted">Обмен:</span> ${r.item}<br><span class="muted">Стоимость:</span> <b>${r.cost} балл.</b><br><span class="muted">Дата:</span> ${r.date}<br><br><span class="badge ${r.status==='Одобрено'?'approved':r.status==='Отказано'?'denied':'pending'}">${r.status}</span></div>`}
+
+    function staffApplicationsPage(){
+      const visible=state.staffApplications.filter(r=>canReviewStaffApplication(r.type));
+      return `<div class="panel"><h2>Заявки на лидера / заместителя</h2><p class="muted">Главный следящий и заместитель главного следящего видят заявки на лидера и заместителя. Обычные следящие видят только заявки на заместителя.</p></div>${visible.map(staffApplicationView).join('') || '<div class="panel">Доступных заявок пока нет</div>'}`;
+    }
+
+    function developerPage(){
+      const allAccounts = [...users, ...state.registeredUsers];
+
+      return `<div class="panel"><h2>Developer Panel</h2><p class="muted">Полный доступ ко всей системе. Разработчик может выдавать любые роли, создавать аккаунты и управлять системой.</p></div>
+
+      <div class="panel">
+        <h2>Все аккаунты</h2>
+        <p class="muted">Выбери нужную роль мышкой — роль сразу изменится на аккаунте.</p>
+        <div style="overflow:auto;margin-top:14px">
+          <table style="width:100%;border-collapse:collapse">
+            <tr style="background:#1d67c1;color:white">
+              <th style="padding:12px;text-align:left">Логин</th>
+              <th style="padding:12px;text-align:left">Ник</th>
+              <th style="padding:12px;text-align:left">Роль</th>
+              <th style="padding:12px;text-align:left">Организация</th>
+              <th style="padding:12px;text-align:left">Почта</th>
+              <th style="padding:12px;text-align:center">Действие</th>
+            </tr>
+            ${allAccounts.map(u=>`
+              <tr class="bo-row" style="border-bottom:1px solid #dce5f0;background:white">
+                <td style="padding:12px;font-weight:800">${u.login}</td>
+                <td style="padding:12px">${u.name}</td>
+                <td style="padding:12px">
+                  <select class="field" style="margin:0" onchange="developerChangeRole('${u.login}', this.value)">
+                    ${['Разработчик сайта','Главный следящий','Заместитель главного следящего','Следящий','Лидер','Заместитель'].map(role=>`<option ${u.role===role?'selected':''}>${role}</option>`).join('')}
+                  </select>
+                </td>
+                <td style="padding:12px">
+                  <select class="field" style="margin:0" onchange="developerChangeOrg('${u.login}', this.value)">
+                    <option value="all" ${u.org==='all'?'selected':''}>Все организации</option>
+                    ${state.orgs.map(o=>`<option ${u.org===o.name?'selected':''}>${o.name}</option>`).join('')}
+                  </select>
+                </td>
+                <td style="padding:12px">${u.email || '—'}</td>
+                <td style="padding:12px;text-align:center">
+                  <button class="btn-red" onclick="developerDeleteByLogin('${u.login}')">Удалить</button>
+                </td>
+              </tr>
+            `).join('')}
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Создать новый аккаунт</h2>
+        <input id="devLogin" class="field" placeholder="Логин пользователя">
+        <input id="devPassword" class="field" placeholder="Пароль пользователя">
+        <input id="devName" class="field" placeholder="Имя пользователя">
+        <input id="devEmail" class="field" placeholder="Почта для восстановления">
+        <select id="devRole" class="field">
+          <option>Главный следящий</option>
+          <option>Заместитель главного следящего</option>
+          <option>Следящий</option>
+          <option>Лидер</option>
+          <option>Заместитель</option>
+        </select>
+        <select id="devOrg" class="field">
+          <option value="all">Все организации</option>
+          ${state.orgs.map(o=>`<option>${o.name}</option>`).join('')}
+        </select>
+        <button onclick="createDeveloperAccount()">Создать аккаунт</button>
+      </div>
+
+      <div class="panel">
+        <h2>Управление аккаунтами</h2>
+        <input id="removeLogin" class="field" placeholder="Логин аккаунта для удаления">
+        <button class="btn-red" onclick="removeDeveloperAccount()">Удалить аккаунт</button>
+      </div>
+
+      <div class="panel">
+        <h2>Логи системы</h2>
+        ${state.logs.slice(0,50).map(l=>`<div class="request-card">${l}</div>`).join('') || '<p class="muted">Логов пока нет</p>'}
+      </div>`;
+    }
+
+    function getAccountByLogin(login){
+      let account = state.registeredUsers.find(u=>u.login.toLowerCase()===login.toLowerCase());
+      let isStatic = false;
+      if(!account){
+        account = users.find(u=>u.login.toLowerCase()===login.toLowerCase());
+        isStatic = !!account;
+      }
+      return {account,isStatic};
+    }
+
+    function makeStaticEditable(login){
+      const base = users.find(u=>u.login.toLowerCase()===login.toLowerCase());
+      if(!base) return null;
+      const existing = state.registeredUsers.find(u=>u.login.toLowerCase()===login.toLowerCase());
+      if(existing) return existing;
+      const copy = {...base};
+      state.registeredUsers.push(copy);
+      return copy;
+    }
+
+    function developerChangeRole(login, role){
+      if(!isDeveloper()) return notify('Нет доступа');
+      let target = state.registeredUsers.find(u=>u.login.toLowerCase()===login.toLowerCase());
+      if(!target) target = makeStaticEditable(login);
+      if(!target) return notify('Аккаунт не найден');
+      target.role = role;
+      state.logs.unshift(`Разработчик выдал роль ${role} аккаунту ${login}`);
+      save();
+      notify('Роль изменена');
+      render();
+    }
+
+    function developerChangeOrg(login, org){
+      if(!isDeveloper()) return notify('Нет доступа');
+      let target = state.registeredUsers.find(u=>u.login.toLowerCase()===login.toLowerCase());
+      if(!target) target = makeStaticEditable(login);
+      if(!target) return notify('Аккаунт не найден');
+      target.org = org;
+      state.logs.unshift(`Разработчик изменил организацию аккаунта ${login} на ${org}`);
+      save();
+      notify('Организация изменена');
+      render();
+    }
+
+    function developerDeleteByLogin(login){
+      if(!isDeveloper()) return notify('Нет доступа');
+      const input = document.getElementById('removeLogin');
+      if(input) input.value = login;
+      removeDeveloperAccount();
+    }
+
+    function removeDeveloperAccount(){
+      if(!isDeveloper()) return notify('Нет доступа');
+
+      const login=document.getElementById('removeLogin').value.trim();
+      if(!login) return notify('Введите логин или ник из заявки');
+
+      const normalizedLogin = login.toLowerCase();
+
+      const regIndex=state.registeredUsers.findIndex(u=>
+        u.login.toLowerCase()===normalizedLogin ||
+        u.name.toLowerCase()===normalizedLogin
+      );
+
+      const staticUser=users.find(u=>
+        u.login.toLowerCase()===normalizedLogin ||
+        u.name.toLowerCase()===normalizedLogin
+      );
+
+      const beforeAppsCount = state.staffApplications.length;
+
+      // Удаляем ВСЕ заявки этого ника, даже если аккаунт уже не найден
+      state.staffApplications = state.staffApplications.filter(a =>
+        a.nick.toLowerCase() !== normalizedLogin
+      );
+
+      const removedAppsCount = beforeAppsCount - state.staffApplications.length;
+
+      // Удаляем аккаунт, если он создан через регистрацию/Developer
+      let removedAccountName = login;
+      if(regIndex !== -1){
+        removedAccountName = state.registeredUsers[regIndex].login;
+        state.registeredUsers.splice(regIndex,1);
+      }
+
+      // Если он был лидером или заместителем — убираем его из организации
+      state.orgs.forEach(org => {
+        if(org.leader && org.leader.toLowerCase() === normalizedLogin){
+          org.leader='Не назначен';
+        }
+        org.deputies = org.deputies.map(dep =>
+          dep && dep.toLowerCase() === normalizedLogin ? '-' : dep
+        );
+      });
+
+      // Если ничего не найдено вообще
+      if(regIndex === -1 && !staticUser && removedAppsCount === 0){
+        return notify('Аккаунт или заявка не найдены');
+      }
+
+      // Статичные тестовые аккаунты удалить из кода нельзя, но можно убрать их заявки/должность
+      if(staticUser){
+        state.logs.unshift(`Разработчик очистил данные тестового аккаунта ${staticUser.login}`);
+        notify('Тестовый аккаунт нельзя удалить из кода, но заявки и должность очищены');
+      } else {
+        state.logs.unshift(`Разработчик полностью удалил ${removedAccountName}: аккаунт, заявки и должность`);
+        notify('Аккаунт, заявки и должность удалены');
+      }
+
+      save();
+      render();
+    }
+
+    function createDeveloperAccount(){
+      if(!isDeveloper()) return notify('Нет доступа');
+
+      const login=document.getElementById('devLogin').value.trim();
+      const pass=document.getElementById('devPassword').value.trim();
+      const name=document.getElementById('devName').value.trim();
+      const role=document.getElementById('devRole').value;
+      const org=document.getElementById('devOrg').value;
+      const email=document.getElementById('devEmail').value.trim();
+
+      if(!login || !pass || !name) return notify('Заполните все поля');
+
+      const allUsers=[...users,...state.registeredUsers];
+      if(allUsers.some(u=>u.login.toLowerCase()===login.toLowerCase())){
+        return notify('Такой логин уже существует');
+      }
+
+      state.registeredUsers.push({
+        login,
+        pass,
+        role,
+        name,
+        org,
+        email
+      });
+
+      state.logs.unshift(`Разработчик создал аккаунт ${login} (${role})`);
+      save();
+      notify('Аккаунт успешно создан');
+      render();
+    }
+
+    function adminPage(){
+      const requestsHtml = state.requests.map(r => `
+        <div class="request-card">
+          <b>${r.nick}</b> — ${r.org}<br>
+          Пункт: ${r.bo}<br>
+          Баллы: <b>${r.points}</b><br>
+          Доказательства: <a class="vk" target="_blank" href="${r.proof}">${r.proof || 'нет'}</a><br>
+          Комментарий: ${r.comment || 'нет'}<br>
+          Статус: <span class="badge ${r.status==='Одобрено'?'approved':r.status==='Отказано'?'denied':'pending'}">${r.status}</span><br><br>
+          ${r.status==='На рассмотрении' ? `<button class="btn-green" onclick="approve(${r.id})">Одобрить</button><button class="btn-red" onclick="deny(${r.id})">Отказать</button>` : ''}
+        </div>
+      `).join('') || '<div class="panel">Заявлений пока нет</div>';
+
+      const exchangeHtml = state.exchangeRequests.map(r => `
+        <div class="request-card">
+          <b>${r.author}</b> — ${r.org}<br>
+          Обмен: ${r.item}<br>
+          Стоимость: <b>${r.cost}</b> балл.<br>
+          Статус: <span class="badge ${r.status==='Одобрено'?'approved':r.status==='Отказано'?'denied':'pending'}">${r.status}</span><br><br>
+          ${r.status==='На рассмотрении' ? `<button class="btn-green" onclick="approveExchange(${r.id})">Одобрить обмен</button><button class="btn-red" onclick="denyExchange(${r.id})">Отказать</button>` : ''}
+        </div>
+      `).join('') || '<p class="muted">Заявок на обмен пока нет</p>';
+
+      const staffManageHtml = canManageStaff() ? `
+        <div class="panel">
+          <h2>Управление лидером и заместителями</h2>
+          <p class="muted">Доступно только главному следящему и заместителю главного следящего.</p>
+          <select id="staffOrg" class="field">${state.orgs.map(o => `<option>${o.name}</option>`).join('')}</select>
+          <input id="newLeader" class="field" placeholder="Ник нового лидера">
+          <button class="btn-green" onclick="setLeader()">Поставить лидера</button>
+          <button class="btn-red" onclick="removeLeader()">Снять лидера</button>
+          <hr style="margin:16px 0;border:0;border-top:1px solid #dce5f0">
+          <select id="depSlot" class="field">
+            <option value="0">Заместитель 1</option>
+            <option value="1">Заместитель 2</option>
+            <option value="2">Заместитель 3</option>
+          </select>
+          <input id="newDeputy" class="field" placeholder="Ник нового заместителя">
+          <button class="btn-green" onclick="setDeputy()">Поставить заместителя</button>
+          <button class="btn-red" onclick="removeDeputy()">Снять заместителя</button>
+        </div>
+      ` : '';
+
+      return `
+        <div class="panel"><button class="btn-red" onclick="lockAdminPanel()">Закрыть панель управления</button></div>
+        <div class="panel">
+          <h2>Панель управления следящего</h2>
+          <p class="muted">При одобрении заявления баллы автоматически начисляются нужной организации.</p><br>
+          <button onclick="setTab('staffApps')">Открыть заявки на лидера / заместителя</button>
+        </div>
+        ${requestsHtml}
+        <div class="panel"><h2>Заявки на обмен баллов</h2>${exchangeHtml}</div>
+        <div class="panel">
+          <h2>Ручная выдача</h2>
+          <select id="aOrg" class="field">${state.orgs.map(o => `<option>${o.name}</option>`).join('')}</select>
+          <input id="aPoints" class="field" type="number" placeholder="Количество баллов">
+          <button onclick="manualPoints(1)">Выдать баллы</button>
+          <button class="btn-red" onclick="manualPoints(-1)">Снять баллы</button>
+          <button class="btn-yellow" onclick="giveWarn('oral')">Выдать устный</button>
+          <button class="btn-red" onclick="giveWarn('rep')">Выдать выговор</button>
+          <button class="btn-light" onclick="removeWarn('oral')">Снять устный</button>
+          <button class="btn-light" onclick="removeWarn('rep')">Снять выговор</button>
+        </div>
+        ${staffManageHtml}
+      `;
+    }
+
+    function approve(id){const r=state.requests.find(x=>x.id===id);if(!r)return;const o=state.orgs.find(x=>x.name===r.org);o.points=Math.min(o.max,o.points+r.points);r.status='Одобрено';state.logs.unshift(`Следящий одобрил БО: ${r.org} +${r.points}`);save();notify('Заявление одобрено, баллы начислены');render()}
+    function deny(id){const r=state.requests.find(x=>x.id===id);if(!r)return;r.status='Отказано';state.logs.unshift(`Следящий отказал БО: ${r.nick}`);save();notify('Заявление отказано');render()}
+    function manualPoints(sign){const o=state.orgs.find(x=>x.name===aOrg.value);const p=+aPoints.value;if(!p)return notify('Укажи баллы');o.points=Math.max(0,Math.min(o.max,o.points+p*sign));state.logs.unshift(`${sign>0?'Выдано':'Снято'} ${p} баллов: ${o.name}`);save();render()}
+
+    function setLeader(){
+      if(!canManageStaff()) return notify('Нет доступа к управлению лидерами');
+      const o=state.orgs.find(x=>x.name===staffOrg.value);
+      const nick=newLeader.value.trim();
+      if(!nick) return notify('Укажи ник лидера');
+      o.leader=nick;
+      state.logs.unshift(`${state.user.name} поставил лидера ${nick} в ${o.name}`);
+      save();notify('Лидер поставлен');render();
+    }
+
+    function removeLeader(){
+      if(!canManageStaff()) return notify('Нет доступа к управлению лидерами');
+      const o=state.orgs.find(x=>x.name===staffOrg.value);
+      state.logs.unshift(`${state.user.name} снял лидера ${o.leader} из ${o.name}`);
+      o.leader='Не назначен';
+      save();notify('Лидер снят');render();
+    }
+
+    function setDeputy(){
+      if(!canManageStaff()) return notify('Нет доступа к управлению заместителями');
+      const o=state.orgs.find(x=>x.name===staffOrg.value);
+      const slot=Number(depSlot.value);
+      const nick=newDeputy.value.trim();
+      if(!nick) return notify('Укажи ник заместителя');
+      o.deputies[slot]=nick;
+      state.logs.unshift(`${state.user.name} поставил заместителя ${nick} в ${o.name}`);
+      save();notify('Заместитель поставлен');render();
+    }
+
+    function removeDeputy(){
+      if(!canManageStaff()) return notify('Нет доступа к управлению заместителями');
+      const o=state.orgs.find(x=>x.name===staffOrg.value);
+      const slot=Number(depSlot.value);
+      state.logs.unshift(`${state.user.name} снял заместителя ${o.deputies[slot]} из ${o.name}`);
+      o.deputies[slot]='-';
+      save();notify('Заместитель снят');render();
+    }
+    function giveWarn(type){
+      const o=state.orgs.find(x=>x.name===aOrg.value);
+      if(type==='oral'){
+        o.oral=Math.min(3,o.oral+1);
+        state.logs.unshift(`Выдан устный выговор: ${o.name}`);
+        if(o.oral>=3){
+          o.oral=0;
+          o.reprimands=Math.min(3,o.reprimands+1);
+          setWarnDeadline(o);
+          state.logs.unshift(`Автоматически выдан выговор за 3 устных: ${o.name}`);
+          notify('Организация получила 3 устных — автоматически выдан выговор');
+        }
+      } else {
+        o.reprimands=Math.min(3,o.reprimands+1);
+        setWarnDeadline(o);
+        state.logs.unshift(`Выдан выговор: ${o.name}`);
+      }
+      save();render();
+    }
+
+    function removeWarn(type){
+      const o=state.orgs.find(x=>x.name===aOrg.value);
+      if(type==='oral'){
+        if(o.oral<=0) return notify('У организации нет устных для снятия');
+        o.oral=Math.max(0,o.oral-1);
+        state.logs.unshift(`Снят устный выговор: ${o.name}`);
+        notify('Устный выговор снят');
+      } else {
+        if(o.reprimands<=0) return notify('У организации нет выговоров для снятия');
+        o.reprimands=Math.max(0,o.reprimands-1);
+        setWarnDeadline(o);
+        state.logs.unshift(`Снят выговор: ${o.name}`);
+        notify('Выговор снят');
+      }
+      save();render();
+    }
+
+    function exchangePage(){
+      const myOrg = getMyOrg();
+      const orgOptions = canAdmin() ? state.orgs : state.orgs.filter(o=>o.name===state.user.org);
+      const items = [
+        {icon:'💰',cost:1,title:'1.500.000$',type:'money'},
+        {icon:'🟨',cost:3,title:'Снять устный выговор',type:'oral'},
+        {icon:'🟥',cost:5,title:'Снять строгий выговор',type:'rep'},
+        {icon:'⭐',cost:10,title:'Индивидуальное задание',type:'task'}
+      ];
+      return `<div class="panel"><h2>Обмен баллов</h2><p class="muted">Лидер или заместитель отправляет заявку на обмен баллов своей организации. Следящий принимает или отказывает в админ-панели.</p>
+      ${myOrg ? `<div class="mini-stat">Ваша организация: <b>${myOrg.name}</b><br>Доступно баллов: <b>${myOrg.points}/${myOrg.max}</b></div>` : ''}
+      </div>
+      <div class="shop">${items.map(x=>`<div class="shop-card"><div class="big">${x.icon}</div><h2>${x.cost} балл.</h2><p>${x.title}</p><br>${canAdmin()?`<select id="exOrg_${x.type}" class="field">${orgOptions.map(o=>`<option>${o.name}</option>`).join('')}</select>`:''}<button onclick="exchange('${x.title}',${x.cost},'${x.type}')">Отправить заявку</button></div>`).join('')}</div>
+      <div class="panel" style="margin-top:18px"><h2>Мои заявки на обмен</h2>${state.exchangeRequests.filter(r=>canAdmin()||r.author===state.user.name||r.org===state.user.org).map(exchangeReqView).join('')||'<p class="muted">Заявок пока нет</p>'}</div>`
+    }
+    function exchange(item,cost,type){
+      const orgName = canAdmin() ? document.getElementById('exOrg_'+type).value : state.user.org;
+      const org = state.orgs.find(o=>o.name===orgName);
+      if(!org) return notify('Организация не найдена');
+      if(org.points < cost) return notify('Недостаточно баллов для обмена');
+      const req={id:Date.now(),org:orgName,author:state.user.name,item,cost,type,status:'На рассмотрении',date:new Date().toLocaleString('ru-RU')};
+      state.exchangeRequests.unshift(req);
+      state.logs.unshift(`${state.user.name} отправил заявку на обмен: ${orgName} — ${item} за ${cost} балл.`);
+      save();notify('Заявка на обмен отправлена');render();
+    }
+
+    function approveExchange(id){
+      const r=state.exchangeRequests.find(x=>x.id===id);if(!r)return;
+      const org=state.orgs.find(o=>o.name===r.org);if(!org)return;
+      if(org.points < r.cost) return notify('Недостаточно баллов у организации');
+      org.points=Math.max(0,org.points-r.cost);
+      if(r.type==='oral') org.oral=Math.max(0,org.oral-1);
+      if(r.type==='rep') org.reprimands=Math.max(0,org.reprimands-1);
+      setWarnDeadline(org);
+      r.status='Одобрено';
+      state.logs.unshift(`Следящий одобрил обмен: ${r.org} — ${r.item}, списано ${r.cost} балл.`);
+      save();notify('Обмен одобрен, баллы списаны');render();
+    }
+    function denyExchange(id){const r=state.exchangeRequests.find(x=>x.id===id);if(!r)return;r.status='Отказано';state.logs.unshift(`Следящий отказал обмен: ${r.org} — ${r.item}`);save();notify('Заявка на обмен отказана');render()} 
+
+    function boPage(){
+      return `<div class="panel"><h2>Список БО</h2><p class="muted">Задания для получения баллов организациями.</p>
+      <div class="bo-search">
+        <input id="boSearch" class="field" placeholder="Поиск по пункту, заданию, КД или примечанию" oninput="renderBoTable()">
+        <select id="boFilter" class="field" onchange="renderBoTable()">
+          <option value="all">🏥🚒 Все организации</option>
+          <option value="МЗ">🏥 Министерство здравоохранения</option>
+          <option value="ПЧ">🚒 Пожарный департамент</option>
+        </select>
+      </div>
+      <div id="boTableBox" style="overflow:auto;margin-top:18px"></div>
+      </div>`
+    }
+
+    function renderBoTable(){
+      const box=document.getElementById('boTableBox');
+      if(!box) return;
+      const query=(document.getElementById('boSearch')?.value || '').toLowerCase().trim();
+      const filter=document.getElementById('boFilter')?.value || 'all';
+      const list=state.boList.filter(item=>{
+        const matchesFilter = filter==='all' || item.id.startsWith(filter);
+        const text=`${item.id} ${item.task} ${item.points} ${item.cooldown} ${item.note}`.toLowerCase();
+        return matchesFilter && (!query || text.includes(query));
+      });
+      box.innerHTML=`
+      <div class="bo-table">
+      <table style="width:100%;border-collapse:collapse">
+      <tr class="bo-head">
+      <th style="padding:12px;text-align:left">Пункт БО</th>
+      <th style="padding:12px;text-align:left">Задание</th>
+      <th style="padding:12px;text-align:center">Баллы</th>
+      <th style="padding:12px;text-align:center">КД</th>
+      <th style="padding:12px;text-align:left">Примечание</th>
+      </tr>
+      ${list.length ? list.map(item=>`
+      <tr style="border-bottom:1px solid #dce5f0;background:white">
+      <td style="padding:14px;font-weight:800">${item.id.startsWith('ПЧ') ? `<span class="bo-id fire">🚒 ${item.id}</span>` : `<span class="bo-id med">🏥 ${item.id}</span>`}</td>
+      <td style="padding:12px">${item.task}</td>
+      <td style="padding:12px;text-align:center"><span class="bo-points">${item.points}</span></td>
+      <td style="padding:12px;text-align:center"><span class="bo-cd">${item.cooldown}</span></td>
+      <td style="padding:12px"><div class="bo-note">${item.note}</div></td>
+      </tr>`).join('') : `<tr><td colspan="5" style="padding:18px;text-align:center;background:white;color:#60708a">Ничего не найдено</td></tr>`}
+      </table></div>`;
+    }
+
+    function oldBoPageTable(){
+      return `
+      <tr style="background:#1d67c1;color:white">
+      <th style="padding:12px;text-align:left">Пункт БО</th>
+      <th style="padding:12px;text-align:left">Задание</th>
+      <th style="padding:12px;text-align:center">Баллы</th>
+      <th style="padding:12px;text-align:center">КД</th>
+      <th style="padding:12px;text-align:left">Примечание</th>
+      </tr>
+      ${state.boList.map(item=>`
+      <tr style="border-bottom:1px solid #dce5f0;background:white">
+      <td style="padding:12px;font-weight:800">${item.id}</td>
+      <td style="padding:12px">${item.task}</td>
+      <td style="padding:12px;text-align:center;font-weight:900;color:#1269d3">${item.points}</td>
+      <td style="padding:12px;text-align:center">${item.cooldown}</td>
+      <td style="padding:12px">${item.note}</td>
+      </tr>`).join('')}
+      </table>
+      </div></div>`
+    }
+
+    function render(){
+      if(!state.user)return loginScreen();
+      let content=
+      state.tab==='orgs' ? orgCards() :
+      state.tab==='cabinet' ? cabinetPage() :
+      state.tab==='request' ? requestPage() :
+      state.tab==='exchange' ? exchangePage() :
+      state.tab==='bo' ? boPage() :
+      state.tab==='staffApps' ? staffApplicationsPage() :
+      state.tab==='dev' ? developerPage() :
+      adminPage();
+      app.innerHTML=`<div class="app">${topbar()}${content}</div>`;
+      if(state.tab==='bo') renderBoTable();
+    }
+    render();
+  </script>
+</body>
+</html>
